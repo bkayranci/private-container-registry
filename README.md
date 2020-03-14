@@ -1,4 +1,4 @@
-# Private Docker Registry
+# Private Container Registry
 Private container registry with basic authentication.
 
 # Installation
