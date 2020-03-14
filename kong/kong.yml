@@ -1,0 +1,26 @@
+_format_version: "1.1"
+
+services:
+- name: registry-service
+  url: http://registry:5000
+  routes:
+  - name: registry-route
+    hosts:
+      - registry.skyz.tech
+    paths:
+      - /
+
+plugins:
+- name: basic-auth
+  service: registry-service
+  config: 
+    hide_credentials: true
+
+consumers:
+- username: sky
+  custom_id: sky
+
+basicauth_credentials:
+  - consumer: sky
+    username: turkalp
+    password: secret

@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  registry:
+    image: registry:2
+    restart: always
+    container_name: registry
+    hostname: registry
+    environment:
+      REGISTRY_HTTP_ADDR: "0.0.0.0:5000"
+      REGISTRY_HTTP_RELATIVEURLS: "true"
+      REGISTRY_HTTP_SECRET: "secret"
+    ports:
+      - 5000:5000
+    volumes:
+      - registry-vol:/var/lib/registry
+      - ./registry/config.yml:/etc/docker/registry/config.yml:ro
+  kong:
+    image: kong:2.0.2-alpine
+    container_name: kong
+    hostname: kong
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: "/usr/local/kong/declarative/kong.yml"
+      KONG_PROXY_ACCESS_LOG: "/dev/stdout"
+      KONG_ADMIN_ACCESS_LOG: "/dev/stdout"
+      KONG_PROXY_ERROR_LOG: "/dev/stderr"
+      KONG_ADMIN_ERROR_LOG: "/dev/stderr"
+      KONG_ADMIN_LISTEN: "0.0.0.0:8001, 0.0.0.0:8444 ssl"
+      KONG_LOG_LEVEL: "error"
+    ports:
+      - 8000:8000
+      - 8443:8443
+      - 8001:8001
+      - 8444:8444
+    volumes:
+      - ./kong:/usr/local/kong/declarative
+
+volumes:
+  registry-vol:
